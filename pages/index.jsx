@@ -1,30 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useSession, signIn, signOut } from "next-auth/react"
 
-import { userService } from 'services';
-
-export default Home;
-
-function Home() {
-    const [users, setUsers] = useState(null);
-
-    useEffect(() => {
-        userService.getAll().then(x => setUsers(x));
-    }, []);
-
-    return (
-        <div className="card mt-4">
-            <h4 className="card-header">You&apos;re logged in with Next.js 11 & Basic HTTP Authentication!!</h4>
-            <div className="card-body">
-                <h6>Users from secure api end point</h6>
-                {users &&
-                    <ul>
-                        {users.map(user =>
-                            <li key={user.id}>{user.firstName} {user.lastName}</li>
-                        )}
-                    </ul>
-                }
-                {!users && <div className="spinner-border spinner-border-sm"></div>}
-            </div>
-        </div>
-    );
+export default function Component() {
+  const { data: session } = useSession()
+  if(session) {
+    return <>
+      Signed in as {session.user.email} <br/>
+      <button onClick={() => signOut()}>Sign out</button>
+    </>
+  }
+  return <>
+    Not signed in <br/>
+    <button onClick={() => signIn("instagram")}>Sign in</button>
+  </>
 }
